@@ -6,12 +6,18 @@ Reusable Agent Skills with human documentation, agent instructions, and supporti
 
 | Skill | Purpose | Primary environment |
 |---|---|---|
-| [`gleason-winrm-connect`](gleason-winrm-connect/) | Connect to a Gleason IPC through WinRM with protected credentials, or stage the approved bootstrap when transport is unavailable. | Windows, PowerShell, Gleason IPC |
-| [`ipc-smb-winrm-bootstrap`](ipc-smb-winrm-bootstrap/) | Classify and guide approved SMB/WinRM bootstrap, deployment, runtime verification, diagnosis, and recovery for a SINUMERIK ONE IPC. | Windows, PowerShell, host project deployment scripts |
 | [`office-vba`](office-vba/) | Inspect, extract, modify, verify, and optionally execute VBA in macro-enabled Excel, Word, and PowerPoint files. | macOS, Linux, or Windows; Python and downloaded MCP runtime |
+| [`sinumerik-ipc-bootstrap`](sinumerik-ipc-bootstrap/) | Classify and guide network, WinRM, bootstrap, deployment, and optional runtime diagnosis or recovery using a selected IPC profile. | Windows, PowerShell, SINUMERIK IPC, host project files |
+| [`sinumerik-ipc-connect`](sinumerik-ipc-connect/) | Connect to a configured SINUMERIK IPC with protected credentials, exact-host trust handling, or approved bootstrap staging. | Windows, PowerShell, SINUMERIK IPC |
+| [`sinumerik-ipc-profiles`](sinumerik-ipc-profiles/) | Share non-secret machine targets, account names, transport settings, bootstrap mappings, runtime probes, and Operate paths across SINUMERIK skills. | Windows, JSON profiles, PowerShell |
 | [`sinumerik-operate-softkeys`](sinumerik-operate-softkeys/) | Inspect, add, update, or remove ownership-tracked SINUMERIK Operate OEM softkeys with guarded WinRM or SMB staging. | Windows, PowerShell, SINUMERIK Operate IPC |
 
 Each skill directory contains a human-facing `README.md` and an agent-facing `SKILL.md`. Read the individual README before installing or running a skill; some skills depend on files from a host project and are not standalone utilities.
+
+The SINUMERIK skills use the shared `sinumerik-ipc-profiles` format. Generic
+skill logic contains no organization accounts or machine addresses. Optional
+presets provide organization-specific non-secret defaults, including the
+Gleason values that were previously hardcoded.
 
 ## Use as an OpenCode V2 catalog
 

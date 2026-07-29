@@ -20,6 +20,10 @@ It is organization-neutral and does not assume a fixed IPC address, Windows acco
 - A SINUMERIK Operate IPC reachable through the approved management network.
 - An authorized IPC administrator credential entered through PowerShell's secure credential prompt or supplied as a `PSCredential`.
 - Confirmed SINUMERIK Operate configuration paths for the target version.
+- Optional [`sinumerik-ipc-profiles`](../sinumerik-ipc-profiles/) installation
+  for predefined machine, account, transport, staging, and Operate paths.
+- Optional [`sinumerik-ipc-connect`](../sinumerik-ipc-connect/) installation
+  for verified DPAPI-protected WinRM credential reuse.
 - For add/update: a local PNG icon, the absolute `.exe` path on the IPC, and the exact managed window title.
 - An approved interactive remote desktop method when WinRM is closed and SMB staging must be executed locally.
 
@@ -36,13 +40,27 @@ Copy-Item -Recurse `
 
 OpenCode-specific `.opencode\skills` placement is also supported because the scripts resolve their helpers relative to their own directory.
 
+To use shared profiles and protected credential reuse, install
+`sinumerik-ipc-profiles` and `sinumerik-ipc-connect` beside this skill.
+
 ## Run the orchestrator
 
 ```powershell
 & '.\.agents\skills\sinumerik-operate-softkeys\scripts\Manage-SinumerikOperateSoftkey.ps1'
 ```
 
-The script prompts for the IPC address, action, and administrator credential. It does not persist the credential. You can also pass a credential supplied by an approved secret-management workflow:
+With the initialized Gleason preset:
+
+```powershell
+& '.\.agents\skills\sinumerik-operate-softkeys\scripts\Manage-SinumerikOperateSoftkey.ps1' `
+  -Profile 'gleason-standard'
+```
+
+The script loads the default profile automatically when the shared profile
+skill and a default config file are present. Explicit parameters override
+profile values. Without a profile, it prompts for the IPC address, action, and
+administrator credential. It does not persist the credential. You can also
+pass a credential supplied by an approved secret-management workflow:
 
 ```powershell
 $credential = Get-Credential

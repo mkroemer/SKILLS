@@ -6,16 +6,26 @@ description: Inspect, add, update, or delete ownership-tracked SINUMERIK Operate
 # SINUMERIK Operate Softkeys
 
 Manage only softkeys owned by this skill. Preserve unrelated OEM integrations.
+Use `sinumerik-ipc-profiles` when predefined machine and account settings are
+available; explicit parameters remain supported.
 
 ## Required workflow
 
-1. Confirm the target IPC, approved administrator account, Operate version,
-   live configuration paths, and maintenance window.
+1. Resolve the named IPC profile when supplied. Confirm the target,
+   administrator account, Operate version, live configuration paths, and
+   maintenance window.
 2. Inspect before changing an unfamiliar IPC.
 3. Run the client orchestrator from the consuming project:
 
    ```powershell
    & '.\.agents\skills\sinumerik-operate-softkeys\scripts\Manage-SinumerikOperateSoftkey.ps1'
+   ```
+
+   With a shared profile:
+
+   ```powershell
+   & '.\.agents\skills\sinumerik-operate-softkeys\scripts\Manage-SinumerikOperateSoftkey.ps1' `
+     -Profile 'example-ipc'
    ```
 
 4. Select `Inspect`, `Add`, `Update`, or `Delete`.
@@ -44,6 +54,13 @@ identity is an administrator before staging or executing anything. Treat an
 open WinRM endpoint with failed authentication as an access problem: correct
 the credential, authorization, HTTPS, or host trust configuration and do not
 bypass it with SMB.
+
+When a profile is selected, use its `computerName`, administrator account,
+`winrm`, and `operate` settings. Let explicit parameters override profile
+values. Keep credentials in secure prompts or protected credential storage,
+never in the profile. When `sinumerik-ipc-connect` is installed beside this
+skill, reuse its verified DPAPI-protected WinRM credential for the configured
+administrator role. Keep direct secure prompting as the standalone fallback.
 
 When the configured WinRM port is closed, use SMB 445 only to stage the
 reviewed helper, JSON plan, and icon under the configured staging root, which

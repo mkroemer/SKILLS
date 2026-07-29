@@ -41,9 +41,10 @@ The catalog makes skill instructions and supporting files available to OpenCode.
 In particular:
 
 - `office-vba` still needs its platform runtime; follow its README or run the included installer;
-- `gleason-winrm-connect` needs reviewed setup files from the consuming project for bootstrap staging;
-- `ipc-smb-winrm-bootstrap` depends on approved bootstrap and deployment files from its consuming project.
-- `sinumerik-operate-softkeys` requires approved administrator access and confirmed configuration paths for the target SINUMERIK Operate version, but has no companion-skill dependency.
+- `sinumerik-ipc-profiles` stores non-secret settings only and does not provide credentials;
+- `sinumerik-ipc-connect` uses `sinumerik-ipc-profiles` for named profiles and needs every profile-mapped bootstrap source from the consuming project before staging;
+- `sinumerik-ipc-bootstrap` depends on the profile and connection skills plus the consuming project's approved bootstrap and deployment procedures;
+- `sinumerik-operate-softkeys` requires approved administrator access and confirmed configuration paths; profile support is optional.
 
 Read the selected skill's `README.md` before executing scripts.
 

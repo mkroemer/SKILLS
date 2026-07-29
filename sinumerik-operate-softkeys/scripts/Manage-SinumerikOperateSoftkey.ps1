@@ -4,12 +4,18 @@ Prompts for a managed SINUMERIK Operate softkey and applies it through WinRM or 
 #>
 [CmdletBinding()]
 param(
+    [string]$Profile,
+    [string]$ConfigPath,
+    [string]$ProfileModulePath,
+    [string]$ConnectionScriptPath,
     [string]$ComputerName,
     [ValidateSet('Inspect', 'Add', 'Update', 'Delete')]
     [string]$Action,
     [System.Management.Automation.PSCredential]$Credential,
     [ValidateRange(1, 65535)]
     [int]$WinRmPort = 5985,
+    [ValidateSet('Default', 'Basic', 'Negotiate', 'NegotiateWithImplicitCredential', 'Credssp', 'Digest', 'Kerberos')]
+    [string]$Authentication = 'Negotiate',
     [switch]$UseSsl,
     [string]$RemoteStagingRoot = 'D:\OEM\Temp\OperateSoftkeys',
     [string]$MotionControlRoot = 'C:\ProgramData\Siemens\MotionControl',
@@ -18,6 +24,14 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $applyScript = Join-Path $PSScriptRoot 'Set-SinumerikOperateSoftkey.ps1'
+$explicitProfileRequest = $PSBoundParameters.ContainsKey('Profile') -or $PSBoundParameters.ContainsKey('ConfigPath')
+$computerWasBound = $PSBoundParameters.ContainsKey('ComputerName')
+$portWasBound = $PSBoundParameters.ContainsKey('WinRmPort')
+$authenticationWasBound = $PSBoundParameters.ContainsKey('Authentication')
+$useSslWasBound = $PSBoundParameters.ContainsKey('UseSsl')
+$stagingWasBound = $PSBoundParameters.ContainsKey('RemoteStagingRoot')
+$motionWasBound = $PSBoundParameters.ContainsKey('MotionControlRoot')
+$ownershipWasBound = $PSBoundParameters.ContainsKey('OwnershipRoot')
 
 function Read-DefaultValue {
     param([string]$Prompt, [string]$Default)
@@ -40,6 +54,30 @@ function ConvertTo-SingleQuotedLiteral {
 }
 
 if (-not (Test-Path -LiteralPath $applyScript -PathType Leaf)) { throw "Softkey apply helper is missing: $applyScript" }
+$profileData = $null
+$resolvedProfileModulePath = $null
+$profileCandidates = @()
+if (-not [string]::IsNullOrWhiteSpace($ProfileModulePath)) { $profileCandidates += $ProfileModulePath }
+$profileCandidates += [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\sinumerik-ipc-profiles\scripts\SinumerikIpcProfiles.psm1'))
+foreach ($candidate in $profileCandidates | Select-Object -Unique) {
+    if (Test-Path -LiteralPath $candidate -PathType Leaf) {
+        Import-Module $candidate -Force
+        $resolvedProfileModulePath = $candidate
+        $profileData = Resolve-SinumerikIpcProfile -Name $Profile -ConfigPath $ConfigPath -AllowMissing:(-not $explicitProfileRequest)
+        break
+    }
+}
+if ($explicitProfileRequest -and -not $profileData) { throw 'sinumerik-ipc-profiles is required when -Profile or -ConfigPath is used.' }
+if ($profileData) {
+    if (-not $computerWasBound) { $ComputerName = [string]$profileData.computerName }
+    if (-not $portWasBound -and $profileData.winrm.port) { $WinRmPort = [int]$profileData.winrm.port }
+    if (-not $authenticationWasBound -and $profileData.winrm.authentication) { $Authentication = [string]$profileData.winrm.authentication }
+    if (-not $useSslWasBound -and $profileData.winrm.useSsl) { $UseSsl = [bool]$profileData.winrm.useSsl }
+    if (-not $stagingWasBound -and $profileData.operate.softkeyStagingRoot) { $RemoteStagingRoot = [string]$profileData.operate.softkeyStagingRoot }
+    if (-not $motionWasBound -and $profileData.operate.motionControlRoot) { $MotionControlRoot = [string]$profileData.operate.motionControlRoot }
+    if (-not $ownershipWasBound -and $profileData.operate.softkeyOwnershipRoot) { $OwnershipRoot = [string]$profileData.operate.softkeyOwnershipRoot }
+    $administratorUser = if ($profileData.accounts.administrator) { [string]$profileData.accounts.administrator } else { $null }
+}
 if (-not $ComputerName) { $ComputerName = (Read-Host 'IPC host or IPv4 address').Trim() }
 if ([string]::IsNullOrWhiteSpace($ComputerName)) { throw 'IPC host or IPv4 address is required.' }
 if (-not $Action) { $Action = Read-DefaultValue 'Action (Inspect/Add/Update/Delete)' 'Inspect' }
@@ -79,31 +117,62 @@ New-Item -ItemType Directory -Path $localStage -Force | Out-Null
 try {
     $winRmReachable = Test-NetConnection -ComputerName $ComputerName -Port $WinRmPort -InformationLevel Quiet
     if ($winRmReachable) {
-        if (-not $Credential) {
-            $Credential = Get-Credential -Message "Enter an approved IPC administrator credential for $ComputerName"
-            if (-not $Credential) { throw 'Credential entry was cancelled.' }
-        }
-        $sessionParameters = @{
-            ComputerName = $ComputerName
-            Credential = $Credential
-            Port = $WinRmPort
-            ErrorAction = 'Stop'
-        }
-        if ($UseSsl) { $sessionParameters.UseSSL = $true }
-
         $session = $null
         try {
-            $session = New-PSSession @sessionParameters
-            $remoteIdentity = Invoke-Command -Session $session -ScriptBlock {
-                $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
-                $principal = New-Object Security.Principal.WindowsPrincipal($identity)
-                [pscustomobject]@{
-                    User = $identity.Name
-                    ComputerName = $env:COMPUTERNAME
-                    IsAdministrator = $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+            $resolvedConnectionScript = $null
+            if (-not [string]::IsNullOrWhiteSpace($ConnectionScriptPath)) {
+                if (-not (Test-Path -LiteralPath $ConnectionScriptPath -PathType Leaf)) { throw "Connection helper not found: $ConnectionScriptPath" }
+                if (-not $profileData -or -not $administratorUser) { throw 'ConnectionScriptPath requires a profile with an administrator account.' }
+                $resolvedConnectionScript = $ConnectionScriptPath
+            }
+            elseif ($profileData -and $administratorUser) {
+                $candidate = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\sinumerik-ipc-connect\scripts\Connect-SinumerikIpc.ps1'))
+                if (Test-Path -LiteralPath $candidate -PathType Leaf) { $resolvedConnectionScript = $candidate }
+            }
+
+            if (-not $Credential -and $resolvedConnectionScript) {
+                $connectParameters = @{
+                    Profile = $profileData.__profileName
+                    ConfigPath = $profileData.__configPath
+                    ProfileModulePath = $resolvedProfileModulePath
+                    ComputerName = $ComputerName
+                    Role = 'administrator'
+                    Port = $WinRmPort
+                    Authentication = $Authentication
+                }
+                if ($UseSsl) { $connectParameters.UseSsl = $true }
+                $connection = & $resolvedConnectionScript @connectParameters
+                $session = $connection.Session
+                $remoteIdentity = $connection.RemoteIdentity
+            }
+            else {
+                if (-not $Credential) {
+                    $credentialParameters = @{ Message = "Enter an approved IPC administrator credential for $ComputerName" }
+                    if ($administratorUser) { $credentialParameters.UserName = $administratorUser }
+                    $Credential = Get-Credential @credentialParameters
+                    if (-not $Credential) { throw 'Credential entry was cancelled.' }
+                }
+                $sessionParameters = @{
+                    ComputerName = $ComputerName
+                    Credential = $Credential
+                    Port = $WinRmPort
+                    Authentication = $Authentication
+                    ErrorAction = 'Stop'
+                }
+                if ($UseSsl) { $sessionParameters.UseSSL = $true }
+                $session = New-PSSession @sessionParameters
+                $remoteIdentity = Invoke-Command -Session $session -ScriptBlock {
+                    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+                    $principal = New-Object Security.Principal.WindowsPrincipal($identity)
+                    [pscustomobject]@{
+                        UserName = $identity.Name
+                        ComputerName = $env:COMPUTERNAME
+                        IsAdministrator = $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+                    }
                 }
             }
-            if (-not $remoteIdentity.IsAdministrator) { throw "The verified remote identity '$($remoteIdentity.User)' is not an IPC administrator." }
+            if (-not $session) { throw 'The connection helper did not return a live session.' }
+            if (-not $remoteIdentity.IsAdministrator) { throw "The verified remote identity '$($remoteIdentity.UserName)' is not an IPC administrator." }
 
             $remoteStage = Join-Path $RemoteStagingRoot $transactionId
             Invoke-Command -Session $session -ArgumentList $remoteStage -ScriptBlock {
@@ -167,7 +236,9 @@ try {
             throw "WinRM and SMB are unreachable on '$ComputerName'. Repair the approved management path; no configuration was staged."
         }
         if (-not $Credential) {
-            $Credential = Get-Credential -Message "Enter an approved IPC administrator credential for SMB staging on $ComputerName"
+            $credentialParameters = @{ Message = "Enter an approved IPC administrator credential for SMB staging on $ComputerName" }
+            if ($administratorUser) { $credentialParameters.UserName = $administratorUser }
+            $Credential = Get-Credential @credentialParameters
             if (-not $Credential) { throw 'Credential entry was cancelled.' }
         }
 
