@@ -42,8 +42,8 @@ In particular:
 
 - `office-vba` still needs its platform runtime; follow its README or run the included installer;
 - `gleason-winrm-connect` needs reviewed setup files from the consuming project for bootstrap staging;
-- `gleason-operate-softkeys` currently requires both Gleason skills under the consuming project's `.opencode/skills` directory for its complete scripted workflow;
 - `ipc-smb-winrm-bootstrap` depends on approved bootstrap and deployment files from its consuming project.
+- `sinumerik-operate-softkeys` requires approved administrator access and confirmed configuration paths for the target SINUMERIK Operate version, but has no companion-skill dependency.
 
 Read the selected skill's `README.md` before executing scripts.
 

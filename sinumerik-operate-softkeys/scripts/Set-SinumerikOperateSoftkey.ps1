@@ -7,7 +7,7 @@ param(
     [Parameter(Mandatory)]
     [string]$PlanPath,
     [string]$MotionControlRoot = 'C:\ProgramData\Siemens\MotionControl',
-    [string]$OwnershipRoot = 'C:\ProgramData\Gleason\OperateSoftkeys'
+    [string]$OwnershipRoot = 'C:\ProgramData\SinumerikOperateSoftkeys'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -152,7 +152,7 @@ if ($action -in @('Add', 'Update')) {
 
 if ($action -eq 'Add') {
     if (Get-IniSection $menuText $areaId) { throw "Menu section '$areaId' already exists." }
-    $processName = "GleasonSkill_$areaId"
+    $processName = "ManagedSoftkey_$areaId"
     if ($systemText -match ('(?mi)^PROC\d+\s*=.*\bprocess:=' + [regex]::Escape($processName) + '(?:,|\s*$)')) { throw "Process name '$processName' already exists outside this skill's ownership." }
     if ($systemText -match ('(?mi)^AREA\d+\s*=.*\bname:=' + [regex]::Escape($areaId) + '(?:,|\s*$)')) { throw "Area name '$areaId' already exists outside this skill's ownership." }
     $number = 500..999 | Where-Object { -not (Get-IniEntry $systemText 'processes' "PROC$_") -and -not (Get-IniEntry $systemText 'areas' "AREA$_") } | Select-Object -First 1
@@ -161,7 +161,7 @@ if ($action -eq 'Add') {
     [regex]::Matches($menuText, '(?mi)^SoftkeyPosition\s*=\s*(\d+)\s*$') | ForEach-Object { [void]$occupied.Add([int]$_.Groups[1].Value) }
     $position = 9..64 | Where-Object { -not $occupied.Contains($_) } | Select-Object -First 1
     if (-not $position) { throw 'No free Operate softkey position exists from 9 through 64.' }
-    $manifest = [pscustomobject]@{ area_id = $areaId; process_key = "PROC$number"; area_key = "AREA$number"; process_name = $processName; position = $position; icon_name = "${areaId}_softkey.png" }
+    $manifest = [pscustomobject]@{ owner = 'sinumerik-operate-softkeys'; area_id = $areaId; process_key = "PROC$number"; area_key = "AREA$number"; process_name = $processName; position = $position; icon_name = "${areaId}_softkey.png" }
 }
 
 $iconPath = Join-Path $iconRoot $manifest.icon_name

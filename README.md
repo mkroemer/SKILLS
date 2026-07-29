@@ -6,10 +6,10 @@ Reusable Agent Skills with human documentation, agent instructions, and supporti
 
 | Skill | Purpose | Primary environment |
 |---|---|---|
-| [`gleason-operate-softkeys`](gleason-operate-softkeys/) | Inspect, add, update, or remove managed SINUMERIK Operate OEM softkeys with guarded WinRM or SMB staging. | Windows, SINUMERIK Operate IPC, project-local companion files |
 | [`gleason-winrm-connect`](gleason-winrm-connect/) | Connect to a Gleason IPC through WinRM with protected credentials, or stage the approved bootstrap when transport is unavailable. | Windows, PowerShell, Gleason IPC |
 | [`ipc-smb-winrm-bootstrap`](ipc-smb-winrm-bootstrap/) | Classify and guide approved SMB/WinRM bootstrap, deployment, runtime verification, diagnosis, and recovery for a SINUMERIK ONE IPC. | Windows, PowerShell, host project deployment scripts |
 | [`office-vba`](office-vba/) | Inspect, extract, modify, verify, and optionally execute VBA in macro-enabled Excel, Word, and PowerPoint files. | macOS, Linux, or Windows; Python and downloaded MCP runtime |
+| [`sinumerik-operate-softkeys`](sinumerik-operate-softkeys/) | Inspect, add, update, or remove ownership-tracked SINUMERIK Operate OEM softkeys with guarded WinRM or SMB staging. | Windows, PowerShell, SINUMERIK Operate IPC |
 
 Each skill directory contains a human-facing `README.md` and an agent-facing `SKILL.md`. Read the individual README before installing or running a skill; some skills depend on files from a host project and are not standalone utilities.
 

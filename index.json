@@ -1,17 +1,6 @@
 {
   "skills": [
     {
-      "name": "gleason-operate-softkeys",
-      "version": "1",
-      "files": [
-        "SKILL.md",
-        "README.md",
-        "AGENTS.md",
-        "scripts/Manage-GleasonOperateSoftkey.ps1",
-        "scripts/Set-GleasonOperateSoftkey.ps1"
-      ]
-    },
-    {
       "name": "gleason-winrm-connect",
       "version": "1",
       "files": [
@@ -54,6 +43,18 @@
         "references/safety.md",
         "examples/opencode.json",
         "examples/opencode-v2.json"
+      ]
+    },
+    {
+      "name": "sinumerik-operate-softkeys",
+      "version": "1",
+      "files": [
+        "SKILL.md",
+        "README.md",
+        "AGENTS.md",
+        "scripts/Manage-SinumerikOperateSoftkey.ps1",
+        "scripts/Set-SinumerikOperateSoftkey.ps1",
+        "tests/Test-SinumerikOperateSoftkey.ps1"
       ]
     }
   ]
