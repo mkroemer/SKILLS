@@ -16,7 +16,7 @@ ln -s "$ROOT" "$TARGET"
 echo "Installed skill link: $TARGET -> $ROOT"
 
 if [ "${OFFICE_VBA_SKIP_BINARY_INSTALL:-0}" != "1" ]; then
-  "$TARGET/install.sh" "$@"
+  sh "$TARGET/install.sh" "$@"
 else
   echo "Skipped office-vba-mcp binary installation."
 fi
