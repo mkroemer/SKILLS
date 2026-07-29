@@ -2,7 +2,7 @@
 name: office-vba
 description: Inspect, extract, create, modify, verify, and optionally execute VBA in macro-enabled Excel, Word, and PowerPoint files. Uses native office-vba MCP tools when available, otherwise calls the bundled standalone Python wrapper.
 license: MIT
-compatibility: OpenCode, Claude Code, Codex, and shell-capable agents; requires Python 3.9+ and the office-vba-mcp binary.
+compatibility: OpenCode, Claude Code, Codex, and shell-capable agents; requires Python 3.9+. The included installer downloads office-vba-mcp when it is not already installed.
 metadata:
   author: mkroemer
   supported-files: xlsm,xlam,docm,dotm,pptm,ppam,potm
@@ -27,12 +27,46 @@ Do not treat `.xlsx`, `.docx`, or `.pptx` as macro-enabled files. Do not silentl
 2. Otherwise call the standalone wrapper in `scripts/office-vba.py`.
 3. Resolve all document and source-directory paths to absolute paths before invoking a tool.
 4. Run `doctor` first when the binary location or installation state is uncertain.
+5. If `doctor` reports that `office-vba-mcp` is missing, install it from the original upstream repository using the included installer, then rerun `doctor`.
 
 The wrapper locates the MCP binary in this order:
 
 1. `OFFICE_VBA_MCP`
-2. `bin/office-vba-mcp` inside this skill
+2. `bin/office-vba-mcp` or `bin/office-vba-mcp.exe` inside this skill
 3. `office-vba-mcp` on `PATH`
+
+## Install the runtime binary
+
+The skill does not redistribute executable binaries. It downloads the platform-specific release asset from `miclip/office-vba-mcp` into its private `bin/` directory.
+
+macOS or Linux:
+
+```bash
+sh ./install.sh
+```
+
+Windows PowerShell:
+
+```powershell
+./install.ps1
+```
+
+Use an explicit tag for reproducible installation:
+
+```bash
+sh ./install.sh --version v1.2.3
+```
+
+Useful options:
+
+- `--force`: replace an existing installed binary.
+- `--require-checksum`: reject releases without a GitHub SHA-256 digest or checksum asset.
+- `--no-doctor`: skip the post-install MCP capability check.
+- `--json`: return structured installation metadata.
+
+The installer detects the current platform using `manifest.json`, verifies SHA-256 when upstream metadata provides it, installs atomically, writes `bin/VERSION.json`, and runs `doctor` by default. Do not override the upstream repository unless the user explicitly requests a fork or mirror.
+
+For more detail, read `references/installation.md`.
 
 ## Standalone commands
 
@@ -89,21 +123,5 @@ Only run a macro when the user explicitly requests execution.
 - Do not overwrite unrelated modules.
 - Do not claim VBA compilation succeeded unless the code was compiled by Office or an equivalent compiler. File-level validation is not compilation.
 - For detailed constraints, read `references/safety.md`.
-
-## Installation
-
-Install the upstream binary into this skill's private `bin/` directory:
-
-```bash
-sh ./install.sh
-```
-
-Windows PowerShell:
-
-```powershell
-./install.ps1
-```
-
-The skill does not redistribute the upstream binary. The installers download the appropriate release from `miclip/office-vba-mcp`.
 
 For native OpenCode MCP registration, see `examples/` and `references/opencode.md`.
