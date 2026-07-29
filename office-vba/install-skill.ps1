@@ -11,3 +11,10 @@ if (Test-Path $Target) {
 
 Copy-Item -Recurse -Path $Root -Destination $Target
 Write-Host "Installed skill: $Target"
+
+if ($env:OFFICE_VBA_SKIP_BINARY_INSTALL -ne "1") {
+    & (Join-Path $Target "install.ps1") @args
+    exit $LASTEXITCODE
+}
+
+Write-Host "Skipped office-vba-mcp binary installation."
