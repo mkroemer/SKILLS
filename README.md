@@ -15,9 +15,10 @@ Reusable Agent Skills with human documentation, agent instructions, and supporti
 Each skill directory contains a human-facing `README.md` and an agent-facing `SKILL.md`. Read the individual README before installing or running a skill; some skills depend on files from a host project and are not standalone utilities.
 
 The SINUMERIK skills use the shared `sinumerik-ipc-profiles` format. Generic
-skill logic contains no organization accounts or machine addresses. Optional
-presets provide organization-specific non-secret defaults, including the
-Gleason values that were previously hardcoded.
+skill logic contains no organization accounts or fixed machine addresses. The
+baseline profile supplies overridable IPC and remote-scope defaults, while
+optional presets provide further organization-specific non-secret values,
+including the Gleason values that were previously hardcoded.
 
 ## Use as an OpenCode V2 catalog
 

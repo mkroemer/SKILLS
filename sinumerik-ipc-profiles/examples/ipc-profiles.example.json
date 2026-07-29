@@ -3,7 +3,7 @@
   "defaultProfile": "example-ipc",
   "profiles": {
     "example-ipc": {
-      "computerName": "192.0.2.10",
+      "computerName": "192.168.214.241",
       "defaultRole": "administrator",
       "accounts": {
         "administrator": "IPC_ADMIN",
@@ -15,8 +15,7 @@
         "authentication": "Negotiate"
       },
       "management": {
-        "clientAddress": "192.0.2.20",
-        "remoteAddress": "192.0.2.0/24"
+        "remoteAddress": "192.168.214.0/24"
       },
       "bootstrap": {
         "remoteRoot": "D:\\OEM\\Adapter",

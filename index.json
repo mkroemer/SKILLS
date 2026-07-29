@@ -34,7 +34,7 @@
     },
     {
       "name": "sinumerik-ipc-connect",
-      "version": "1",
+      "version": "2",
       "files": [
         "SKILL.md",
         "README.md",
@@ -47,7 +47,7 @@
     },
     {
       "name": "sinumerik-ipc-profiles",
-      "version": "1",
+      "version": "2",
       "files": [
         "SKILL.md",
         "README.md",

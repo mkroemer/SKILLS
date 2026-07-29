@@ -32,7 +32,7 @@ Install this skill beside `sinumerik-ipc-connect`,
 
 ## Initialize a profile file
 
-Neutral template:
+Generic baseline:
 
 ```powershell
 & '.\.agents\skills\sinumerik-ipc-profiles\scripts\Initialize-SinumerikIpcProfiles.ps1' `
@@ -53,9 +53,12 @@ The default destination is:
 ```
 
 Existing files are never overwritten unless `-Force` is supplied. Review the
-file and add one named entry for every required IPC. The included Gleason
-preset contains the defaults that were previously hardcoded in the skills, but
-no passwords. It retains the former Gleason softkey ownership root so existing
+file and add one named entry for every required IPC. The generic baseline
+defaults `IpcIp` to `192.168.214.241` and `RemoteAddress` to
+`192.168.214.0/24`; both remain ordinary profile values and can be overridden.
+The included Gleason preset additionally provides the account, file, runtime,
+and Operate defaults that were previously hardcoded in the skills, but no
+passwords. It retains the former Gleason softkey ownership root so existing
 ownership manifests remain addressable; change that field deliberately when a
 new namespace is required.
 
@@ -106,5 +109,5 @@ The test uses temporary files and does not contact an IPC.
 
 - [`SKILL.md`](SKILL.md) - agent workflow and safety boundaries.
 - [`AGENTS.md`](AGENTS.md) - schema and maintenance requirements.
-- [`examples/ipc-profiles.example.json`](examples/ipc-profiles.example.json) - neutral template.
+- [`examples/ipc-profiles.example.json`](examples/ipc-profiles.example.json) - generic baseline with default network values.
 - [`examples/gleason.ipc-profiles.example.json`](examples/gleason.ipc-profiles.example.json) - optional Gleason preset.

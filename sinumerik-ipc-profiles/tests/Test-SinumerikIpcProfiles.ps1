@@ -20,13 +20,13 @@ try {
 
     $profile = Resolve-SinumerikIpcProfile -ConfigPath $configPath
     Assert-True ($profile.__profileName -eq 'example-ipc') 'The default profile should resolve.'
-    Assert-True ($profile.computerName -eq '192.0.2.10') 'The profile target should resolve.'
+    Assert-True ($profile.computerName -eq '192.168.214.241') 'The default IPC address should resolve.'
     Assert-True ((Get-SinumerikIpcProfileNames -ConfigPath $configPath) -contains 'example-ipc') 'Profile listing should include the example.'
 
     $command = New-SinumerikIpcBootstrapCommand -Profile $profile
     Assert-True ($command.Contains("setup_ipc.ps1")) 'The bootstrap command should contain the entry script.'
-    Assert-True ($command.Contains("192.0.2.10")) 'The bootstrap command should expand the target placeholder.'
-    Assert-True ($command.Contains("192.0.2.0/24")) 'The bootstrap command should expand the management scope.'
+    Assert-True ($command.Contains("192.168.214.241")) 'The bootstrap command should expand the default IPC address.'
+    Assert-True ($command.Contains("192.168.214.0/24")) 'The bootstrap command should expand the default remote scope.'
 
     $invalidPath = Join-Path $testRoot 'invalid.json'
     [IO.File]::WriteAllText(

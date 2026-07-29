@@ -43,9 +43,11 @@ $profile = Resolve-SinumerikIpcProfile -Name 'example-ipc'
 
 ## Presets
 
-Use `examples/ipc-profiles.example.json` as the neutral template. Use
-`examples/gleason.ipc-profiles.example.json` only for the documented Gleason
-defaults. Neither file contains passwords.
+Use `examples/ipc-profiles.example.json` as the generic baseline. Its default
+IPC address is `192.168.214.241` and its default approved remote scope is
+`192.168.214.0/24`; override either value for another network. Use
+`examples/gleason.ipc-profiles.example.json` for the additional documented
+Gleason defaults. Neither file contains passwords.
 
 Initialize the current Windows user's profile file:
 

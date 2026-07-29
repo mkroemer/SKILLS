@@ -27,7 +27,7 @@ try {
     & $pasteScript -Profile example-ipc -ConfigPath $configPath -ProfileModulePath $profileModule -SourceRoot $testRoot -OutputPath $outputPath
     $content = [IO.File]::ReadAllText($outputPath)
     Assert-True ($content.Contains('setup_ipc.ps1')) 'The paste block should contain the approved entry script.'
-    Assert-True ($content.Contains('192.0.2.10')) 'The paste block should contain the configured target.'
+    Assert-True ($content.Contains('192.168.214.241')) 'The paste block should contain the default IPC address.'
     Assert-True ($content.Contains('SHA-256 mismatch')) 'The paste block should verify staged hashes.'
 
     $credentialStore = Join-Path $testRoot 'credentials'
