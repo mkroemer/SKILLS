@@ -2,6 +2,28 @@
 
 All examples use the portable Python wrapper. Native MCP tools accept the equivalent arguments.
 
+## Install the runtime binary
+
+macOS or Linux:
+
+```bash
+sh ./install.sh
+sh ./install.sh --version v1.2.3
+sh ./install.sh --force
+sh ./install.sh --require-checksum
+```
+
+Windows PowerShell:
+
+```powershell
+./install.ps1
+./install.ps1 --version v1.2.3
+./install.ps1 --force
+./install.ps1 --require-checksum
+```
+
+The installer downloads the correct upstream release asset into `bin/`, records metadata in `bin/VERSION.json`, and runs `doctor` by default. See `installation.md` for the complete installer behavior and options.
+
 ## Diagnose installation
 
 ```bash
@@ -84,10 +106,14 @@ MCP call:
 
 The host application must be running with the target file open. Execution support is host- and platform-dependent.
 
-## Environment variables
+## Runtime environment variables
 
 - `OFFICE_VBA_MCP`: absolute path to the upstream MCP binary.
 - `PYTHON`: Python executable used by the shell wrappers.
 - `OFFICE_VBA_MCP_INSTALL_DIR`: installer destination; defaults to `bin/` inside the skill.
-- `OFFICE_VBA_MCP_RELEASE_BASE_URL`: alternative release download base URL.
+- `OFFICE_VBA_MCP_VERSION`: default release tag; defaults to the value in `manifest.json`.
+- `OFFICE_VBA_MCP_REPOSITORY`: alternate upstream `owner/repository`.
+- `OFFICE_VBA_MCP_GITHUB_API_BASE`: alternate GitHub-compatible API base.
+- `GITHUB_TOKEN` or `GH_TOKEN`: optional GitHub API token.
+- `OFFICE_VBA_SKIP_BINARY_INSTALL`: set to `1` to skip the binary during skill installation.
 - `AGENT_SKILLS_DIR`: alternative global Agent Skills directory.
