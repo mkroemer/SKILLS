@@ -1,38 +1,6 @@
 {
   "skills": [
     {
-      "name": "gleason-operate-softkeys",
-      "version": "1",
-      "files": [
-        "SKILL.md",
-        "README.md",
-        "AGENTS.md",
-        "scripts/Manage-GleasonOperateSoftkey.ps1",
-        "scripts/Set-GleasonOperateSoftkey.ps1"
-      ]
-    },
-    {
-      "name": "gleason-winrm-connect",
-      "version": "1",
-      "files": [
-        "SKILL.md",
-        "README.md",
-        "AGENTS.md",
-        "scripts/Connect-GleasonWinRM.ps1",
-        "scripts/New-GleasonWinRMVncPaste.ps1",
-        "scripts/Stage-GleasonWinRMBootstrap.ps1",
-        "scripts/run_gleason_ipc_setup.cmd"
-      ]
-    },
-    {
-      "name": "ipc-smb-winrm-bootstrap",
-      "version": "1",
-      "files": [
-        "SKILL.md",
-        "README.md"
-      ]
-    },
-    {
       "name": "office-vba",
       "version": "1",
       "files": [
@@ -54,6 +22,54 @@
         "references/safety.md",
         "examples/opencode.json",
         "examples/opencode-v2.json"
+      ]
+    },
+    {
+      "name": "sinumerik-ipc-bootstrap",
+      "version": "1",
+      "files": [
+        "SKILL.md",
+        "README.md"
+      ]
+    },
+    {
+      "name": "sinumerik-ipc-connect",
+      "version": "2",
+      "files": [
+        "SKILL.md",
+        "README.md",
+        "AGENTS.md",
+        "scripts/Connect-SinumerikIpc.ps1",
+        "scripts/New-SinumerikIpcBootstrapPaste.ps1",
+        "scripts/Stage-SinumerikIpcBootstrap.ps1",
+        "tests/Test-SinumerikIpcConnect.ps1"
+      ]
+    },
+    {
+      "name": "sinumerik-ipc-profiles",
+      "version": "2",
+      "files": [
+        "SKILL.md",
+        "README.md",
+        "AGENTS.md",
+        "scripts/SinumerikIpcProfiles.psm1",
+        "scripts/Get-SinumerikIpcProfile.ps1",
+        "scripts/Initialize-SinumerikIpcProfiles.ps1",
+        "examples/ipc-profiles.example.json",
+        "examples/gleason.ipc-profiles.example.json",
+        "tests/Test-SinumerikIpcProfiles.ps1"
+      ]
+    },
+    {
+      "name": "sinumerik-operate-softkeys",
+      "version": "2",
+      "files": [
+        "SKILL.md",
+        "README.md",
+        "AGENTS.md",
+        "scripts/Manage-SinumerikOperateSoftkey.ps1",
+        "scripts/Set-SinumerikOperateSoftkey.ps1",
+        "tests/Test-SinumerikOperateSoftkey.ps1"
       ]
     }
   ]

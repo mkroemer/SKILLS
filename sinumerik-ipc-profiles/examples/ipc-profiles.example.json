@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "defaultProfile": "example-ipc",
+  "profiles": {
+    "example-ipc": {
+      "computerName": "192.168.214.241",
+      "defaultRole": "administrator",
+      "accounts": {
+        "administrator": "IPC_ADMIN",
+        "operator": "HMI_USER"
+      },
+      "winrm": {
+        "port": 5985,
+        "useSsl": false,
+        "authentication": "Negotiate"
+      },
+      "management": {
+        "remoteAddress": "192.168.214.0/24"
+      },
+      "bootstrap": {
+        "remoteRoot": "D:\\OEM\\Adapter",
+        "shares": [
+          "D",
+          "D$"
+        ],
+        "files": [
+          {
+            "source": "scripts\\setup_ipc.ps1",
+            "destination": "setup_ipc.ps1"
+          },
+          {
+            "source": "scripts\\IpcSetup.psm1",
+            "destination": "IpcSetup.psm1"
+          }
+        ],
+        "stateFile": "ipc_setup_state.json",
+        "revertScript": "revert_ipc_setup.ps1",
+        "entryScript": "setup_ipc.ps1",
+        "entryArguments": {
+          "IpcIp": "{computerName}",
+          "RemoteAddress": "{management.remoteAddress}"
+        }
+      },
+      "runtime": {
+        "port": 8765,
+        "processName": "MachineCollector.exe",
+        "taskName": "Machine Collector Interactive Start",
+        "healthPath": "/health",
+        "snapshotPath": "/snapshot",
+        "activeReleaseFile": "active-release.json",
+        "logFiles": [
+          "logs\\collector.error.log",
+          "logs\\collector.output.log"
+        ]
+      },
+      "operate": {
+        "motionControlRoot": "C:\\ProgramData\\Siemens\\MotionControl",
+        "softkeyOwnershipRoot": "C:\\ProgramData\\SinumerikOperateSoftkeys",
+        "softkeyStagingRoot": "D:\\OEM\\Temp\\OperateSoftkeys"
+      }
+    }
+  }
+}
