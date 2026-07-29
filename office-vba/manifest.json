@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "repository": "miclip/office-vba-mcp",
+  "default_version": "latest",
+  "assets": {
+    "darwin-arm64": "office-vba-mcp-darwin-arm64",
+    "darwin-amd64": "office-vba-mcp-darwin-amd64",
+    "linux-amd64": "office-vba-mcp-linux-amd64",
+    "windows-amd64": "office-vba-mcp-windows-amd64.exe"
+  }
+}
