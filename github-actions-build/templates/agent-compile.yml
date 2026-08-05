@@ -1,0 +1,97 @@
+name: Agent compile
+
+on:
+  workflow_dispatch:
+    inputs:
+      request_id:
+        description: Stable agent build request identifier
+        required: true
+        type: string
+      target_sha:
+        description: Exact 40-character commit SHA to build
+        required: true
+        type: string
+      profile:
+        description: Reviewed build profile
+        required: true
+        type: choice
+        options:
+          - rust-check-package
+          - rust-test-package
+          - rust-build-package
+      package:
+        description: Exact Cargo package name
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agent-compile
+  cancel-in-progress: true
+
+jobs:
+  compile:
+    name: ${{ inputs.profile }} / ${{ inputs.package }}
+    runs-on: ubuntu-latest
+    timeout-minutes: __MAX_RUN_MINUTES__
+    env:
+      REQUEST_ID: ${{ inputs.request_id }}
+      TARGET_SHA: ${{ inputs.target_sha }}
+      BUILD_PROFILE: ${{ inputs.profile }}
+      CARGO_PACKAGE: ${{ inputs.package }}
+      COMMAND_TIMEOUT_SECONDS: __COMMAND_TIMEOUT_SECONDS__
+    steps:
+      - name: Validate request
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$REQUEST_ID" =~ ^[A-Za-z0-9_.-]{1,80}$ ]]
+          [[ "$TARGET_SHA" =~ ^[0-9a-fA-F]{40}$ ]]
+          [[ "$CARGO_PACKAGE" =~ ^[A-Za-z0-9_.-]+$ ]]
+          case "$BUILD_PROFILE" in
+            rust-check-package|rust-test-package|rust-build-package) ;;
+            *) echo "Unsupported build profile" >&2; exit 2 ;;
+          esac
+
+      - name: Checkout exact commit
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ inputs.target_sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Verify checkout and package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${TARGET_SHA,,}"
+          cargo metadata --no-deps --format-version 1 > "$RUNNER_TEMP/cargo-metadata.json"
+          python3 - "$CARGO_PACKAGE" "$RUNNER_TEMP/cargo-metadata.json" <<'PY'
+          import json
+          import sys
+          package = sys.argv[1]
+          metadata = json.load(open(sys.argv[2], encoding="utf-8"))
+          names = {entry["name"] for entry in metadata["packages"]}
+          if package not in names:
+              raise SystemExit(f"Unknown Cargo package: {package}")
+          PY
+          rustup show active-toolchain
+          cargo --version
+
+      - name: Compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$BUILD_PROFILE" in
+            rust-check-package)
+              timeout "${COMMAND_TIMEOUT_SECONDS}s" cargo check -p "$CARGO_PACKAGE" --lib --locked
+              ;;
+            rust-test-package)
+              timeout "${COMMAND_TIMEOUT_SECONDS}s" cargo test -p "$CARGO_PACKAGE" --lib --locked
+              ;;
+            rust-build-package)
+              timeout "${COMMAND_TIMEOUT_SECONDS}s" cargo build -p "$CARGO_PACKAGE" --locked
+              ;;
+          esac

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "enabled": false,
+  "workflow_path": ".github/workflows/agent-compile.yml",
+  "workflow_name": "Agent compile",
+  "daily_budget_minutes": 10,
+  "monthly_budget_minutes": 30,
+  "max_run_minutes": 8,
+  "max_runs_per_request": 2,
+  "command_timeout_seconds": 360,
+  "runner": "ubuntu-latest",
+  "allow_parallel_jobs": false,
+  "allow_automatic_retry": false,
+  "allow_artifacts": false,
+  "profiles": {
+    "rust-check-package": {
+      "language": "rust",
+      "package_required": true,
+      "summary": "Run cargo check for one explicit package library target"
+    },
+    "rust-test-package": {
+      "language": "rust",
+      "package_required": true,
+      "summary": "Run library tests for one explicit Cargo package"
+    },
+    "rust-build-package": {
+      "language": "rust",
+      "package_required": true,
+      "summary": "Build one explicit Cargo package"
+    }
+  }
+}

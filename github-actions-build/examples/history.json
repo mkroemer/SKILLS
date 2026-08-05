@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "workflow_path": ".github/workflows/agent-compile.yml",
+  "complete": true,
+  "runs": [
+    {
+      "id": 123456789,
+      "html_url": "https://github.com/owner/repository/actions/runs/123456789",
+      "inputs": {
+        "request_id": "agent-build-example",
+        "target_sha": "0123456789abcdef0123456789abcdef01234567",
+        "profile": "rust-check-package",
+        "package": "example-package"
+      },
+      "jobs": [
+        {
+          "id": 987654321,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-08-05T18:00:00Z",
+          "completed_at": "2026-08-05T18:02:10Z"
+        }
+      ]
+    }
+  ]
+}

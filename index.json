@@ -1,6 +1,21 @@
 {
   "skills": [
     {
+      "name": "github-actions-build",
+      "version": "1",
+      "files": [
+        "SKILL.md",
+        "README.md",
+        "scripts/github_actions_build.py",
+        "scripts/actions_build_core.py",
+        "scripts/actions_build_budget.py",
+        "scripts/actions_build_request.py",
+        "templates/agent-compile.yml",
+        "examples/policy.json",
+        "examples/history.json"
+      ]
+    },
+    {
       "name": "github-file-edit",
       "version": "1",
       "files": [
@@ -12,6 +27,20 @@
         "scripts/file_edit_fs.py",
         "scripts/file_edit_ops.py",
         "examples/edit-plan.json"
+      ]
+    },
+    {
+      "name": "github-workspace",
+      "version": "1",
+      "files": [
+        "SKILL.md",
+        "README.md",
+        "scripts/github_workspace.py",
+        "scripts/workspace_core.py",
+        "scripts/workspace_state.py",
+        "scripts/workspace_refresh.py",
+        "scripts/workspace_archive.py",
+        "examples/materialize-manifest.json"
       ]
     },
     {
