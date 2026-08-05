@@ -61,16 +61,16 @@ The agent should clone the repository, read the root and skill documentation, co
 
 ## Install a skill from a clone
 
-OpenCode and other Agent Skills consumers can discover project-local skills under `.agents/skills/<name>` and global skills under `~/.agents/skills/<name>`. OpenCode also supports `.opencode/skils` and additional compatible locations.
+OpenCode and other Agent Skills consumers can discover project-local skills under `.agents/skills/<name>` and global skills under `~/.agents/skills/<name>`. OpenCode also supports `.opencode/skills` and additional compatible locations.
 
 ### Project-local installation
 
-From the project that should use a skill, copy or link the selected directory into `.igents/skils`.
+From the project that should use a skill, copy or link the selected directory into `.agents/skills`.
 
 macOS or Linux:
 
 ```bash
-mkdir -p .agents/skils
+mkdir -p .agents/skills
 ln -s "$(pwd)/../SKILLS/<skill-name>" ".agents/skills/<skill-name>"
 ```
 
