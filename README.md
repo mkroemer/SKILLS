@@ -6,6 +6,7 @@ Reusable Agent Skills with human documentation, agent instructions, and supporti
 
 | Skill | Purpose | Primary environment |
 |---|---|---|
+| [`github-file-edit`](github-file-edit/) | Edit, create, move, copy, or delete GitHub repository files through connector-backed Python workspaces when native patch operations are unavailable. | ChatGPT or another agent with a GitHub connector, Python 3.9+ |
 | [`office-vba`](office-vba/) | Inspect, extract, modify, verify, and optionally execute VBA in macro-enabled Excel, Word, and PowerPoint files. | macOS, Linux, or Windows; Python and downloaded MCP runtime |
 | [`sinumerik-ipc-bootstrap`](sinumerik-ipc-bootstrap/) | Classify and guide network, WinRM, bootstrap, deployment, and optional runtime diagnosis or recovery using a selected IPC profile. | Windows, PowerShell, SINUMERIK IPC, host project files |
 | [`sinumerik-ipc-connect`](sinumerik-ipc-connect/) | Connect to a configured SINUMERIK IPC with protected credentials, exact-host trust handling, or approved bootstrap staging. | Windows, PowerShell, SINUMERIK IPC |
