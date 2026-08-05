@@ -1,6 +1,20 @@
 {
   "skills": [
     {
+      "name": "github-file-edit",
+      "version": "1",
+      "files": [
+        "SKILL.md",
+        "README.md",
+        "scripts/file_edit.py",
+        "scripts/file_edit_core.py",
+        "scripts/file_edit_text.py",
+        "scripts/file_edit_fs.py",
+        "scripts/file_edit_ops.py",
+        "examples/edit-plan.json"
+      ]
+    },
+    {
       "name": "office-vba",
       "version": "1",
       "files": [

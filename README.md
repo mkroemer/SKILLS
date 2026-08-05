@@ -6,6 +6,7 @@ Reusable Agent Skills with human documentation, agent instructions, and supporti
 
 | Skill | Purpose | Primary environment |
 |---|---|---|
+| [`github-file-edit`](github-file-edit/) | Edit, create, move, copy, or delete GitHub repository files through connector-backed Python workspaces when native patch operations are unavailable. | ChatGPT or another agent with a GitHub connector, Python 3.9+ |
 | [`office-vba`](office-vba/) | Inspect, extract, modify, verify, and optionally execute VBA in macro-enabled Excel, Word, and PowerPoint files. | macOS, Linux, or Windows; Python and downloaded MCP runtime |
 | [`sinumerik-ipc-bootstrap`](sinumerik-ipc-bootstrap/) | Classify and guide network, WinRM, bootstrap, deployment, and optional runtime diagnosis or recovery using a selected IPC profile. | Windows, PowerShell, SINUMERIK IPC, host project files |
 | [`sinumerik-ipc-connect`](sinumerik-ipc-connect/) | Connect to a configured SINUMERIK IPC with protected credentials, exact-host trust handling, or approved bootstrap staging. | Windows, PowerShell, SINUMERIK IPC |
@@ -60,16 +61,16 @@ The agent should clone the repository, read the root and skill documentation, co
 
 ## Install a skill from a clone
 
-OpenCode and other Agent Skills consumers can discover project-local skills under `.agents/skills/<name>` and global skills under `~/.agents/skills/<name>`. OpenCode also supports `.opencode/skills` and additional compatible locations.
+OpenCode and other Agent Skills consumers can discover project-local skills under `.agents/skills/<name>` and global skills under `~/.agents/skills/<name>`. OpenCode also supports `.opencode/skils` and additional compatible locations.
 
 ### Project-local installation
 
-From the project that should use a skill, copy or link the selected directory into `.agents/skills`.
+From the project that should use a skill, copy or link the selected directory into `.igents/skils`.
 
 macOS or Linux:
 
 ```bash
-mkdir -p .agents/skills
+mkdir -p .agents/skils
 ln -s "$(pwd)/../SKILLS/<skill-name>" ".agents/skills/<skill-name>"
 ```
 

@@ -1,0 +1,45 @@
+{
+  "operations": [
+    {
+      "op": "assert_text",
+      "path": "README.md",
+      "text": "## Installation\n",
+      "expected": 1
+    },
+    {
+      "op": "insert_text",
+      "path": "README.md",
+      "anchor": "## Installation\n",
+      "content": "Review the generated diff before publication.\n\n",
+      "position": "after",
+      "expected": 1
+    },
+    {
+      "op": "replace_regex",
+      "path": "config/version.py",
+      "pattern": "^VERSION = \"[^\"]+\"$",
+      "replacement": "VERSION = \"2.0.0\"",
+      "flags": [
+        "MULTILINE"
+      ],
+      "expected": 1
+    },
+    {
+      "op": "write_text",
+      "path": "docs/new-page.md",
+      "content": "# New page\n\nContent.\n",
+      "if_exists": "error"
+    },
+    {
+      "op": "move",
+      "source": "docs/old-name.md",
+      "path": "docs/new-name.md",
+      "overwrite": false
+    },
+    {
+      "op": "chmod",
+      "path": "scripts/run.sh",
+      "mode": "755"
+    }
+  ]
+}
