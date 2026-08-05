@@ -60,6 +60,20 @@ class FileEditTests(unittest.TestCase):
         self.assertEqual([("src/app.py", "modified")],
                          [(x["path"], x["status"]) for x in edit._changes(before, after)])
 
+    @unittest.skipIf(os.name == "nt", "symlink semantics")
+    def test_dry_run_preserves_symlinks(self):
+        outside = Path(self.temp.name) / "outside.txt"
+        outside.write_text("secret\n", encoding="utf-8")
+        link = self.root / "src/link.txt"
+        link.symlink_to(outside)
+        with tempfile.TemporaryDirectory() as temp:
+            shadow = Path(temp) / "workspace"
+            edit._copy_for_dry_run(self.root, shadow)
+            shadow_link = shadow / "src/link.txt"
+            self.assertTrue(shadow_link.is_symlink())
+            with self.assertRaises(edit.EditError):
+                edit._safe_path(shadow, "src/link.txt")
+
     def test_expected_count_guard(self):
         with self.assertRaises(edit.EditError):
             self.apply([{"op": "replace_text", "path": "src/app.py",

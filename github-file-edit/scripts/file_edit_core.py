@@ -210,5 +210,6 @@ def _copy_for_dry_run(source, target):
     shutil.copytree(
         source,
         target,
+        symlinks=True,
         ignore=shutil.ignore_patterns(".git", ".hg", ".svn", "__pycache__"),
     )
