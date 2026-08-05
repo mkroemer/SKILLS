@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "repository": "owner/repository",
+  "ref": "feature/example",
+  "commit_sha": "0123456789abcdef0123456789abcdef01234567",
+  "tree_sha": "89abcdef0123456789abcdef0123456789abcdef",
+  "checkout": "sparse",
+  "files": [
+    {
+      "path": "README.md",
+      "blob_sha": "1111111111111111111111111111111111111111",
+      "mode": "100644",
+      "source": "connector-inputs/README.md"
+    },
+    {
+      "path": "scripts/check.sh",
+      "blob_sha": "2222222222222222222222222222222222222222",
+      "mode": "100755",
+      "content_base64": "IyEvYmluL3NoCmVjaG8gb2sK"
+    }
+  ]
+}
